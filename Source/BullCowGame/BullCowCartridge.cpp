@@ -4,31 +4,42 @@
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
-
     SetupGame();
-
-    PrintLine(TEXT("Welcome to cows world (-%s-) simulation"), *HiddenWord);
-    PrintLine(TEXT("Look at this cute animals!!!))"));
-    PrintLine(TEXT("Guess %i charecters word. \nOr they will die!!!"), HiddenWord.Len());
-
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
 {
-    ClearScreen();
-    
-    if (HiddenWord == Input) {
-        PrintLine(TEXT("long live cows"));
+    if (bGameIsOver) {
+        SetupGame();
     } else {
-        if(Input.Len() != HiddenWord.Len()) {
-            PrintLine(TEXT("Incorrect number of charecters (%i) \n -X-"), HiddenWord.Len());
+        if (HiddenWord == Input) {
+            PrintLine(TEXT("long live cows"));
+            EndGame();
+        } else {
+            if(Input.Len() != HiddenWord.Len()) {
+                PrintLine(TEXT("Incorrect number of charecters (%i)"), HiddenWord.Len());
+                PrintLine(TEXT("All cows are dead. Try harder next time!!!"), *HiddenWord);
+                EndGame();
+            }
         }
-        PrintLine(TEXT("You killed all the fucking cows!!!"));
     }
 }
 
 void UBullCowCartridge::SetupGame() 
 {
-     HiddenWord = TEXT("fakez");
-     Lives = 0;
+    HiddenWord = TEXT("fakez");
+    Lives = 0;
+    bGameIsOver = false;
+
+    ClearScreen();
+
+    PrintLine(TEXT("Welcome to cows world (-%s-) simulation"), *HiddenWord);
+    PrintLine(TEXT("Look at this cute animals!!!))"));
+    PrintLine(TEXT("Guess %i charecters word. \nOr they will die!!!"), HiddenWord.Len());
+}
+
+void UBullCowCartridge::EndGame() 
+{    
+    bGameIsOver = true;
+    PrintLine(TEXT("Click enter to try save cows again..."), *HiddenWord);
 }
